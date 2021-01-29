@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using dotnet_rpg.Data;
+using dotnet_rpg.Services.CharacterService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +32,15 @@ namespace dotnet_rpg
         public void ConfigureServices(IServiceCollection services)
         {
 
+            string _connectionString;
+            string appSettings = String.Concat(Directory.GetCurrentDirectory(), "/appsettings.json");
+            var configurationSettings = new ConfigurationBuilder().AddJsonFile(appSettings).Build();
+            _connectionString = configurationSettings["ConnectionStrings:DefaultConnection"];
+            services.AddDbContext<DataContext>(x =>
+            x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
+            services.AddScoped<ICharacterService, CharacterService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "dotnet_rpg", Version = "v1" });
