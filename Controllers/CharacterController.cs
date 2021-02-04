@@ -5,11 +5,14 @@ using dotnet_rpg.Services.CharacterService;
 using dotnet_rpg.Dtos.Character;
 using dotnet_rpg.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace dotnet_rpg.Controllers
 {
     //ApiController: Indicates the types to serv https responses, enables attributes http
     //Route: Ever take the first part of the class name, in this case Character, to route the API call
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CharacterController : ControllerBase
